@@ -37,9 +37,8 @@ fn main() {
     let cards: Vec<String> = cards.into_iter().map(|card| card.to_lowercase()).collect();
     let cardlist = CARDLIST.to_lowercase();
     let deck = Deck::import(&cardlist).unwrap();
-    let decks = deck.removed();
-    let mut decks: Vec<Deck> = decks
-        .into_iter()
+    let mut decks: Vec<Deck> = deck
+        .removed()
         .flat_map(|deck| deck.removed())
         .flat_map(|deck| {
             cards.iter().map(move |card| {
