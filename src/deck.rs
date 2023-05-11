@@ -95,28 +95,14 @@ impl<'s> Deck<'s> {
         }
     }
 
-    pub fn removed(self) -> Vec<Deck<'s>> {
+    pub fn removed(self) -> impl Iterator<Item = Deck<'s>> {
         let keys = self.sideboard.clone().into_keys();
-        let mut decks = Vec::new();
 
-        for key in keys {
+        keys.map(move |key| {
             let mut deck = self.clone();
-            let entry = deck.sideboard.entry(key);
-            match entry {
-                Entry::Occupied(mut entry) => {
-                    let x = entry.get_mut();
-                    *x -= 1;
-                    if *x == 0 {
-                        entry.remove_entry();
-                    }
-                }
-                _ => unreachable!(),
-            };
-
-            decks.push(deck);
-        }
-
-        decks
+            deck.remove_sideboard(key);
+            deck
+        })
     }
 
     pub fn insert_sideboard(&mut self, card: &'s str) {
